@@ -9,10 +9,10 @@ import (
 func main() {
 	fmt.Println("Init in main")
 
-	var port string = "9090"
 	//WebServer
-	//web.NewWebServer()
-	//web.InitRoutes(orderUseCase)
-	//web.Start(config.GetString("web.port"))
+	var port string = "8080"
+	web.NewWebServer()
+	web.InitRoutes()
 	web.Start(port)
+	//web.Start(config.GetString("web.port"))
 }
