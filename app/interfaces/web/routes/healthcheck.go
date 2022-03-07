@@ -1,38 +1,43 @@
-package web
+package routes
 
 import (
-	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
-	"github.com/spro80/apiGolang/app/interfaces/web/routes"
 )
 
-var echoServer *echo.Echo
+var startTime time.Time
 
-func NewWebServer() {
-	echoServer = echo.New()
-	echoServer.HideBanner = true
-	//echoServer.Use(middleware.Recover())
-	echoServer.Use(middleware.CORS())
-	echoServer.Use(middleware.RequestID())
-	//echoServer.Validator = json_validator.NewJsonValidator()
+func init() {
+	startTime = time.Now()
 }
 
-func InitRoutes() {
-	routes.NewHealthHandler(echoServer)
+type healthHandler struct {
 }
 
-func Start(port string) {
-	server := &http.Server{
-		Addr:         fmt.Sprintf(":%s", port),
-		ReadTimeout:  3 * time.Minute,
-		WriteTimeout: 3 * time.Minute,
+type health struct {
+	Status      string `json:"status"`
+	Version     string `json:"version"`
+	Uptime      string `json:"uptime"`
+	Environment string `json:"environment"`
+	Region      string `json:"region"`
+}
+
+func NewHealthHandler(e *echo.Echo) {
+	h := &healthHandler{}
+	e.GET("/health", h.HealthCheck)
+}
+
+func (p *healthHandler) HealthCheck(c echo.Context) error {
+	versionApp := os.Getenv("VERSION_APP")
+	healthCheck := health{
+		Status:      "UP",
+		Version:     versionApp,
+		Uptime:      time.Since(startTime).String(),
+		Environment: os.Getenv("ENVIRONMENT"),
+		Region:      os.Getenv("REGION"),
 	}
-	log.Info("App listen in port %s", port)
-	log.Info(server)
-	//echoServer.Logger.Fatal(echoServer.StartServer(server))
+	return c.JSON(http.StatusOK, healthCheck)
 }
