@@ -9,33 +9,67 @@ import (
 //	"github.com/spro80/apiGolang/app/application/orderUseCase"
 
 type OrderControllerInterface interface {
-	Process() (bool, error)
+	Process() (Response, error)
+}
+type orderControllerHandler struct {
+	orderUseCase orderUseCase.OrderUseCaseInterface
 }
 
-type orderController struct {
-	responseController int
+type Response struct {
+	Status            bool   `json:"status"`
+	StatusCode        int    `json:"statusCode"`
+	StatusDescription string `json:"statusDescription"`
+	StatusError       string `json:"statusError"`
 }
 
-func NewOrderController() *orderController {
-	return &orderController{}
-}
-
-func (s *orderController) Process() (bool, error) {
-	fmt.Println("[controllers-getHealthCheck] Init in healtchCheck from controller")
-	//var sum int = CalculateSum(99, 2)
-	//fmt.Println(sum)
-
-	fmt.Println("[controllers-getHealthCheck] Calling to use case Order")
-	var status, err = orderUseCase.OrderUseCase()
-	if err != nil {
-		fmt.Println("[controllers-getHealthCheck] Error in called to use case")
+func NewOrderController(orderUseCase orderUseCase.OrderUseCaseInterface) *orderControllerHandler {
+	orderController := &orderControllerHandler{
+		orderUseCase: orderUseCase,
 	}
-	fmt.Println("[controllers-getHealthCheck] Use case order was called succesfully")
-	fmt.Println(status)
+	return orderController
+}
 
-	return status, err
+func (s *orderControllerHandler) Process() (Response, error) {
+	fileName := "controllers-order"
+	fmt.Printf("\n[%s] Init in healtchCheck from controller", fileName)
+	fmt.Printf("\n[%s] Calling to use case Order", fileName)
+
+	var res, err = s.orderUseCase.Process()
+	if err != nil {
+		fmt.Printf("\n[%s] Error calling use case Order", fileName)
+	}
+
+	fmt.Printf("\n[%s] Use case order was called succesfully", fileName)
+	fmt.Println(res)
+
+	var status = res.Status
+	var statusCode = res.StatusCode
+	var statusDes = res.StatusDescription
+	var statusErr = res.StatusError
+	responseController := Response{
+		Status:            status,
+		StatusCode:        statusCode,
+		StatusDescription: statusDes,
+		StatusError:       statusErr,
+	}
+	PresenterTopic("Present to message in topic kafka.")
+	PresenterSlack("Present to message in slack.")
+
+	return responseController, err
 }
 
 func CalculateSum(n1 int, n2 int) int {
 	return n1 + n2
+}
+
+func PresenterTopic(message string) (string, error) {
+	fileName := "controllers-order"
+	fmt.Printf("\n[%s] Init in PresenterTopic", fileName)
+	return message, nil
+}
+
+func PresenterSlack(message string) (string, error) {
+	fileName := "controllers-order"
+	fmt.Printf("\n[%s] Init in PresenterSlack", fileName)
+	return message, nil
 }

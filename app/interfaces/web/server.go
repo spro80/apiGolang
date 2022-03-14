@@ -27,7 +27,8 @@ func NewWebServer() {
 
 func InitRoutes(saveOrderUseCase order.OrderControllerInterface) {
 	routes.NewHealthHandler(echoServer)
-	routes.NewSaveOrderHandler(echoServer, saveOrderUseCase)
+	routes.NewPingHandler(echoServer)
+	routes.NewProcessOrderHandler(echoServer, saveOrderUseCase)
 }
 
 func Start(port string) {
