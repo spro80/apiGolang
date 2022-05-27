@@ -6,8 +6,6 @@ import (
 	"github.com/spro80/apiGolang/app/application/orderUseCase"
 )
 
-//	"github.com/spro80/apiGolang/app/application/orderUseCase"
-
 type OrderControllerInterface interface {
 	Process() (Response, error)
 }
@@ -56,10 +54,7 @@ func (s *orderControllerHandler) Process() (Response, error) {
 	PresenterSlack("Present to message in slack.")
 
 	return responseController, err
-}
 
-func CalculateSum(n1 int, n2 int) int {
-	return n1 + n2
 }
 
 func PresenterTopic(message string) (string, error) {
@@ -72,4 +67,8 @@ func PresenterSlack(message string) (string, error) {
 	fileName := "controllers-order"
 	fmt.Printf("\n[%s] Init in PresenterSlack", fileName)
 	return message, nil
+}
+
+func CalculateSum(n1 int, n2 int) int {
+	return n1 + n2
 }
