@@ -1,0 +1,63 @@
+package services
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"reflect"
+)
+
+type GetAllUsersServicesInterface interface {
+	ProcessServicesGetAllUsers() (Response, error)
+}
+
+type Response struct {
+	UserId    int    `json:"userId"`
+	Id        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+}
+
+type GetAllUsersServices struct {
+}
+
+func NewGetUsers() *GetAllUsersServices {
+	return &GetAllUsersServices{}
+}
+
+func (g GetAllUsersServices) ProcessServicesGetAllUsers() (Response, error) {
+
+	//urlComplete := "https://jsonplaceholder.typicode.com/todos"
+	//url := "https://jsonplaceholder.typicode.com/"
+	//path := "todos"
+
+	fmt.Println("[services][get_all_users] Calling GetAllUsers 1")
+	response, err := http.Get("https://jsonplaceholder.typicode.com/todos/3")
+	if err != nil {
+		fmt.Println("[services][get_all_users] err distinto de nil")
+		fmt.Print(err.Error())
+	}
+	fmt.Println(response)
+	fmt.Println("[services][get_all_users] Calling GetAllUsers 1.5")
+	fmt.Println(response.Body)
+	fmt.Println("[services][get_all_users] Calling GetAllUsers 2")
+	body, err0 := ioutil.ReadAll(response.Body)
+	if err0 != nil {
+		fmt.Println("[services][get_all_users] err0 fatal")
+		log.Fatal(err0)
+	}
+	fmt.Println("[services][get_all_users] Calling GetAllUsers3")
+	sBody := string(body)
+	var jsonMaps2 Response
+	err3 := json.Unmarshal([]byte(sBody), &jsonMaps2)
+	if err3 != nil {
+		fmt.Println("[services][get_all_users] err3 distinto de nil")
+		fmt.Printf(err3.Error())
+	}
+
+	fmt.Println(reflect.TypeOf(jsonMaps2))
+	fmt.Println("[services][get_all_users] return GetAllUsers")
+	return jsonMaps2, nil
+}
