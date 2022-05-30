@@ -7,7 +7,9 @@ import (
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/order"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGet"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAll"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAllServices"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiLogin"
+	"github.com/spro80/apiGolang/app/infraestructure/services"
 	"github.com/spro80/apiGolang/app/interfaces/web"
 )
 
@@ -21,6 +23,9 @@ func main() {
 	//fmt.Println(connectionMongo)
 	//Controller
 
+	//services
+	service := services.NewGetUsers()
+
 	//cosmos
 	orderUseCase := orderUseCase.NewOrderUseCase()
 	orderController := order.NewOrderController(orderUseCase)
@@ -28,10 +33,12 @@ func main() {
 	templateApiController := templateApiGet.NewTemplateApiController()
 	templateApiGetAllController := templateApiGetAll.NewTemplateApiGetAllController()
 	templateApiLoginController := templateApiLogin.NewTemplateApiLoginController()
+	templateApiGetAllServicesController := templateApiGetAllServices.NewTemplateApiGetAllServicesController(service)
+
 	//WebServer
 	var port string = "8080"
 	web.NewWebServer()
-	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController)
+	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController, templateApiGetAllServicesController)
 	web.Start(port)
 	//web.Start(config.GetString("web.port"))
 	//ordenes, eventos
