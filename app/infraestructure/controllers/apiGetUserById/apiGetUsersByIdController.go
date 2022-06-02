@@ -2,7 +2,6 @@ package apiGetUserById
 
 import (
 	"fmt"
-	"reflect"
 
 	"github.com/spro80/apiGolang/app/infraestructure/services"
 )
@@ -26,10 +25,9 @@ func (t *ControllerApiGetUserByIdHandler) Process(id string) (services.ServiceGe
 	response, err := t.service.ProcessServicesGetUsersById(id)
 	if err != nil {
 		fmt.Println("Error in call Process Services Get Users By Id")
+		fmt.Println(err.Error())
+		return response, err
 	}
 	fmt.Println("[controller][apiGetUsersByIdController] Service GetUserById was called successfully")
-	fmt.Println(reflect.TypeOf(response))
-	fmt.Println(response)
-
 	return response, nil
 }
