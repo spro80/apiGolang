@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spro80/apiGolang/app/application/orderUseCase"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/apiGetUserById"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/order"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGet"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAll"
@@ -25,6 +26,7 @@ func main() {
 
 	//services
 	service := services.NewGetUsers()
+	serviceGetUsersById := services.NewGetUsersById()
 
 	//cosmos
 	orderUseCase := orderUseCase.NewOrderUseCase()
@@ -35,10 +37,12 @@ func main() {
 	templateApiLoginController := templateApiLogin.NewTemplateApiLoginController()
 	templateApiGetAllServicesController := templateApiGetAllServices.NewTemplateApiGetAllServicesController(service)
 
+	getUserByIdController := apiGetUserById.NewControllerApiGetUserBydId(serviceGetUsersById)
+
 	//WebServer
 	var port string = "8080"
 	web.NewWebServer()
-	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController, templateApiGetAllServicesController)
+	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController, templateApiGetAllServicesController, getUserByIdController)
 	web.Start(port)
 	//web.Start(config.GetString("web.port"))
 	//ordenes, eventos

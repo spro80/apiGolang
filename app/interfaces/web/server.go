@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/apiGetUserById"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/order"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGet"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAll"
@@ -27,7 +28,7 @@ func NewWebServer() {
 	//echoServer.Validator = json_validator.NewJsonValidator()
 }
 
-func InitRoutes(saveOrderUseCase order.OrderControllerInterface, templateApiGetController templateApiGet.TemplateApiGetControllerInterface, templateApiGetAllController templateApiGetAll.TemplateApiGetAllControllerInterface, templateApiLoginController templateApiLogin.TemplateApiLoginControllerInterface, templateApiGetAllServicesController templateApiGetAllServices.TemplateApiGetAllServicesControllerInterface) {
+func InitRoutes(saveOrderUseCase order.OrderControllerInterface, templateApiGetController templateApiGet.TemplateApiGetControllerInterface, templateApiGetAllController templateApiGetAll.TemplateApiGetAllControllerInterface, templateApiLoginController templateApiLogin.TemplateApiLoginControllerInterface, templateApiGetAllServicesController templateApiGetAllServices.TemplateApiGetAllServicesControllerInterface, apiGetUserById apiGetUserById.ControllerApiGetUserByIdInterface) {
 	routes.NewHealthHandler(echoServer)
 	routes.NewPingHandler(echoServer)
 	routes.NewProcessOrderHandler(echoServer, saveOrderUseCase)
@@ -35,6 +36,7 @@ func InitRoutes(saveOrderUseCase order.OrderControllerInterface, templateApiGetC
 	routes.NewTemplateApiGetAllHandler(echoServer, templateApiGetAllController)
 	routes.NewTemplateApiLoginHandler(echoServer, templateApiLoginController)
 	routes.NewTemplateApiGetAllServicesHandler(echoServer, templateApiGetAllServicesController)
+	routes.NewRouteApiGetUserByIdHandler(echoServer, apiGetUserById)
 }
 
 func Start(port string) {
