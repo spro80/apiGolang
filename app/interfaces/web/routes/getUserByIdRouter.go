@@ -39,8 +39,6 @@ func NewRouteApiGetUserByIdHandler(e *echo.Echo, apiGetUserByIdController apiGet
 		apiGetUserByIdController: apiGetUserByIdController,
 	}
 	e.GET("/getUserById/:id", RouterApiGetUserByIdHandler.Process)
-	//e.GET("/getUserById/{id}", RouterApiGetUserByIdHandler.Process)
-	//e.GET("/getUserById?id", RouterApiGetUserByIdHandler.Process)
 	return RouterApiGetUserByIdHandler
 }
 
