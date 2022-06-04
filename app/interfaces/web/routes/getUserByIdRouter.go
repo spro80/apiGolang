@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/spro80/apiGolang/app/infraestructure/controllers/apiGetUserById"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/userControllerGetById"
 )
 
 type User struct {
@@ -31,12 +31,12 @@ type RouterGetUserByIdData struct {
 }
 
 type RouterApiGetUserByIdHandler struct {
-	apiGetUserByIdController apiGetUserById.ControllerApiGetUserByIdInterface
+	userControllerGetById userControllerGetById.UserControllerGetByIdInterface
 }
 
-func NewRouteApiGetUserByIdHandler(e *echo.Echo, apiGetUserByIdController apiGetUserById.ControllerApiGetUserByIdInterface) *RouterApiGetUserByIdHandler {
+func NewRouteApiGetUserByIdHandler(e *echo.Echo, userControllerGetById userControllerGetById.UserControllerGetByIdInterface) *RouterApiGetUserByIdHandler {
 	RouterApiGetUserByIdHandler := &RouterApiGetUserByIdHandler{
-		apiGetUserByIdController: apiGetUserByIdController,
+		userControllerGetById: userControllerGetById,
 	}
 	e.GET("/getUserById/:id", RouterApiGetUserByIdHandler.Process)
 	return RouterApiGetUserByIdHandler
@@ -67,7 +67,7 @@ func (t RouterApiGetUserByIdHandler) Process(c echo.Context) error {
 	fmt.Println(idValue)
 
 	fmt.Println("[routes][getUserByIdRouter] Calling to controller apiGetUsersByIdController")
-	response, err := t.apiGetUserByIdController.Process(id)
+	response, err := t.userControllerGetById.Process(id)
 	fmt.Println("[routes][getUserByIdRouter] Controller apiGetUsersByIdController was called succesfully")
 	if err != nil {
 		fmt.Println("[routes][getUserByIdRouter] error")

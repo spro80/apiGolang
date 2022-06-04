@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/spro80/apiGolang/app/application/orderUseCase"
-	"github.com/spro80/apiGolang/app/infraestructure/controllers/apiGetUserById"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/order"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGet"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAll"
-	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAllServices"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiLogin"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/userControllerGetAll"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/userControllerGetById"
 	"github.com/spro80/apiGolang/app/infraestructure/services"
 	"github.com/spro80/apiGolang/app/interfaces/web"
 )
@@ -28,21 +28,22 @@ func main() {
 	service := services.NewGetUsers()
 	serviceGetUsersById := services.NewGetUsersById()
 
-	//cosmos
+	//useCase
 	orderUseCase := orderUseCase.NewOrderUseCase()
 	orderController := order.NewOrderController(orderUseCase)
 
+	//controller
 	templateApiController := templateApiGet.NewTemplateApiController()
 	templateApiGetAllController := templateApiGetAll.NewTemplateApiGetAllController()
 	templateApiLoginController := templateApiLogin.NewTemplateApiLoginController()
-	templateApiGetAllServicesController := templateApiGetAllServices.NewTemplateApiGetAllServicesController(service)
 
-	getUserByIdController := apiGetUserById.NewControllerApiGetUserBydId(serviceGetUsersById)
+	apiUserGetAllController := userControllerGetAll.NewUserControllerGetAll(service)
+	userControllerGetById := userControllerGetById.NewUserControllerGetBydId(serviceGetUsersById)
 
 	//WebServer
 	var port string = "8080"
 	web.NewWebServer()
-	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController, templateApiGetAllServicesController, getUserByIdController)
+	web.InitRoutes(orderController, templateApiController, templateApiGetAllController, templateApiLoginController, apiUserGetAllController, userControllerGetById)
 	web.Start(port)
 	//web.Start(config.GetString("web.port"))
 	//ordenes, eventos

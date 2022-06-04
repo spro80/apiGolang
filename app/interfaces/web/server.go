@@ -8,12 +8,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
-	"github.com/spro80/apiGolang/app/infraestructure/controllers/apiGetUserById"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/order"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGet"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAll"
-	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiGetAllServices"
 	"github.com/spro80/apiGolang/app/infraestructure/controllers/templateApiLogin"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/userControllerGetAll"
+	"github.com/spro80/apiGolang/app/infraestructure/controllers/userControllerGetById"
 	"github.com/spro80/apiGolang/app/interfaces/web/routes"
 )
 
@@ -28,15 +28,15 @@ func NewWebServer() {
 	//echoServer.Validator = json_validator.NewJsonValidator()
 }
 
-func InitRoutes(saveOrderUseCase order.OrderControllerInterface, templateApiGetController templateApiGet.TemplateApiGetControllerInterface, templateApiGetAllController templateApiGetAll.TemplateApiGetAllControllerInterface, templateApiLoginController templateApiLogin.TemplateApiLoginControllerInterface, templateApiGetAllServicesController templateApiGetAllServices.TemplateApiGetAllServicesControllerInterface, apiGetUserById apiGetUserById.ControllerApiGetUserByIdInterface) {
+func InitRoutes(saveOrderUseCase order.OrderControllerInterface, templateApiGetController templateApiGet.TemplateApiGetControllerInterface, templateApiGetAllController templateApiGetAll.TemplateApiGetAllControllerInterface, templateApiLoginController templateApiLogin.TemplateApiLoginControllerInterface, userControllerGetAll userControllerGetAll.UserControllerGetAllInterface, userControllerGetById userControllerGetById.UserControllerGetByIdInterface) {
 	routes.NewHealthHandler(echoServer)
 	routes.NewPingHandler(echoServer)
 	routes.NewProcessOrderHandler(echoServer, saveOrderUseCase)
 	routes.NewTemplateApiHandler(echoServer, templateApiGetController)
 	routes.NewTemplateApiGetAllHandler(echoServer, templateApiGetAllController)
 	routes.NewTemplateApiLoginHandler(echoServer, templateApiLoginController)
-	routes.NewTemplateApiGetAllServicesHandler(echoServer, templateApiGetAllServicesController)
-	routes.NewRouteApiGetUserByIdHandler(echoServer, apiGetUserById)
+	routes.NewRouterApiGetAllUsersHandler(echoServer, userControllerGetAll)
+	routes.NewRouteApiGetUserByIdHandler(echoServer, userControllerGetById)
 }
 
 func Start(port string) {
